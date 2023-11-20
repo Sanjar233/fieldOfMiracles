@@ -231,6 +231,114 @@ public class Main {
         }
         return s.size();
     }
+    
+    public static void menu(String word, ArrayList<String> usedLetters, String description, int pointsForGuess,
+            String curPlayer, int pScore, String log) {
+        clear();
+        System.out.println(word);
+        String border = "\u2BC0";
+        String hidenLetter = "\u2BCE";
+        //
+        int len = description.length();
+        //
+        String[][] wordLog = new String[3][len];
+        int start = len / 2 - word.length();
+        if (start % 2 != 0)
+            start += 1;
+        int end = start + word.length() * 2;
+        int counter = 0;
+        //
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < len; j++) {
+                if (counter <= word.length() - 1 && (j >= start && j <= end) && i == 1 && j % 2 != 0
+                        && !usedLetters.contains(String.valueOf(word.charAt(counter)))) {
+                    wordLog[i][j] = hidenLetter;
+                    counter++;
+                } else if (counter <= word.length() - 1 && (j >= start && j <= end) && i == 1 && j % 2 != 0) {
+                    wordLog[i][j] = String.valueOf(word.charAt(counter));
+                    counter++;
+                } else if (j >= start && j <= end) {
+                    wordLog[i][j] = border;
+                } else if (i == 0 || i == 2) {
+                    wordLog[i][j] = "=";
+                } else {
+                    wordLog[i][j] = " ";
+                }
+            }
+        }
+        for (int i = 0; i < len; i++) {
+            System.out.print("= ");
+        }
+        if (!curPlayer.equals("")) {
+            System.out.println();
+            System.out.println(
+                    "\n" + curPlayer + "'s turn | " + "Score: " + pScore + " | Points for right guess: "
+                            + pointsForGuess);
+            System.out.println();
+        }
+        //
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < len; j++) {
+                System.out.print(wordLog[i][j] + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for (int i = 0; i < len; i++) {
+            if (i < description.length() / 2)
+                System.out.print(" ");
+            else {
+                System.out.println("DESCRIPTION:" + description);
+                break;
+            }
+        }
+        System.out.println();
+        for (int i = 0; i < len; i++) {
+            System.out.print("= ");
+        }
+        System.out.println();
+        System.out.println(log);
+    }
 
+    // menu();
+    public static void eliminationNotification(String player, String description) {
+        clear();
+        int len = description.length();
+        String border = "\u2620";
+        for (int i = 0; i < len; i++) {
+            System.out.print(border + " ");
+        }
+        System.out.println();
+        int start = len / 2 - (player.length() - 21);
+        for (int i = 0; i < start; i++) {
+            System.out.print(" ");
+        }
+        System.out.print("Player " + player + " is eliminated");
+        System.out.println();
+        for (int i = 0; i < len; i++) {
+            System.out.print(border + " ");
+        }
+        System.out.println();
+    }
+
+    public static void victoryLog(String player, String description) {
+        clear();
+        int len = description.length();
+        String border = "\u2BC0";
+        for (int i = 0; i < len; i++) {
+            System.out.print(border + " ");
+        }
+        System.out.println();
+        int start = len / 2 - (player.length() - 21);
+        for (int i = 0; i < start; i++) {
+            System.out.print(" ");
+        }
+        System.out.print("Player " + player + " won!");
+        System.out.println();
+        for (int i = 0; i < len; i++) {
+            System.out.print(border + " ");
+        }
+        System.out.println();
+    }
     
 }
