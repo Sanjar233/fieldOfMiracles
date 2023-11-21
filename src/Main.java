@@ -1,23 +1,21 @@
 import java.util.*;
 
 public class Main {
-    // player : queue ; score;
+
     public static void main(String[] args) {
         clear();
         Scanner sc = new Scanner(System.in);
         Random rand = new Random();
-        // Players ARRAY
-        ArrayList<String> players = getPlayers();
-        // RANDOMIZING QUEUE
-        HashMap<Integer, String> playersQueue = randomizeQueue(players.size(), players);
-        // PICKING WORD
-        String word = getRandomWord();
-        // ArrayList<String> players = getPlayers();
-        // for(int i = 0 ; i < word.length() - 1; i++)
 
-        // GETTING DESCRIPTION FOR THAT WORD
+        ArrayList<String> players = getPlayers();
+
+        HashMap<Integer, String> playersQueue = randomizeQueue(players.size(), players);
+
+        String word = getRandomWord();
+
+
         String description = getDescription(word);
-        // SCORE SETTING
+
         HashMap<String, Integer> score = new HashMap<String, Integer>();
         for (String e : players) {
             score.put(e, 0);
@@ -43,12 +41,9 @@ public class Main {
 
                 if (!playersQueue.containsKey(i))
                     continue;
-                // LOG
-                // player;word;score;scforLetter
-                //
 
                 String curPlayer = playersQueue.get(i);
-                //
+
                 int scorePerLetter = rand.nextInt(1000 / counter(word) / 2, 1000 / counter(word) * 3 / 2);
                 int curScore = score.get(curPlayer);
                 menu(word, used, description, scorePerLetter, curPlayer, curScore, log);
@@ -69,13 +64,11 @@ public class Main {
                     if (score.get(curPlayer) > curMaxScore)
                         curMaxScore = score.get(curPlayer);
                     menu(word, used, description, scorePerLetter, curPlayer, curScore, log);
-                    // EXIT VICTORY
                     if (score.get(curPlayer) >= maxScore) {
-                        log = "YES SOLO";// CHANGE TO VICTORY LOG
-                        menu(word, used, description, i, curPlayer, curScore, log);
+                        victoryLog(curPlayer, description);
                         System.exit(0);
                     }
-                    // EXIT NEXT PART
+
                     if (curMaxScore > maxScore / 2 && players.size() >= 2) {
                         curWinner = curPlayer;
                         stop = true;
@@ -91,10 +84,9 @@ public class Main {
                     for (String e : guessLetters) {
                         used.add(e);
                     }
-                    log = "VICTORY"; // CHANGE TO VICTORY LOG
+                    log = "VICTORY";
                     menu(word, used, description, scorePerLetter, curPlayer, curScore, log);
                     System.exit(0);
-                    // ELIMINATED
                 } else {
                     if (players.size() == 1) {
                         log = "The word is not correct\nGAME OVER";
@@ -119,7 +111,7 @@ public class Main {
             victoryLog(players.get(0), description);
             System.exit(0);
         }
-        log = "One of players reached more than a half of maximum points.\n So here is the Final";
+        log = "One of players reached more than a half of maximum points.\nSo here is the Final";
         int scorePerLetter = 0;
         String curPlayer = "";
         int curScore = 0;
@@ -129,20 +121,29 @@ public class Main {
                 curPlayer = playersQueue.get(i);
                 if (curPlayer.equals(curWinner))
                     continue;
-                System.out.println(curPlayer);
-                System.out.println("Enter word");
-                String guess = sc.nextLine();
+                menu(word, used, description, scorePerLetter, curPlayer, curScore, log);
+                System.out.println("Enter word ");
+                String guess = sc.next();
+                guess = guess.toUpperCase();
                 if (guess.equals(word)) {
-                    System.out.println(curPlayer + " won! Congrats!");
+                    String [] wordsLetters = word.split("");
+                    for(String e : wordsLetters)
+                    {
+                        used.add(e);
+                    }
+                    victoryLog(curPlayer, description);
                     System.exit(0);
                 } else {
-                    System.out.println("Incorrect!!!");
+                    eliminationNotification(curPlayer, description);
+                    System.out.println("Enter anything to continue");
+                    String x = sc.next();
                 }
             } else {
                 continue;
             }
         }
-        System.out.println(curWinner + "won! Congrats!");
+        victoryLog(curPlayer, description);
+
     }
 
     public static ArrayList<String> getPlayers() {
@@ -231,23 +232,23 @@ public class Main {
         }
         return s.size();
     }
-    
+
     public static void menu(String word, ArrayList<String> usedLetters, String description, int pointsForGuess,
-            String curPlayer, int pScore, String log) {
+                            String curPlayer, int pScore, String log) {
         clear();
         System.out.println(word);
         String border = "\u2BC0";
         String hidenLetter = "\u2BCE";
-        //
+
         int len = description.length();
-        //
+
         String[][] wordLog = new String[3][len];
         int start = len / 2 - word.length();
         if (start % 2 != 0)
             start += 1;
         int end = start + word.length() * 2;
         int counter = 0;
-        //
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < len; j++) {
                 if (counter <= word.length() - 1 && (j >= start && j <= end) && i == 1 && j % 2 != 0
@@ -276,7 +277,7 @@ public class Main {
                             + pointsForGuess);
             System.out.println();
         }
-        //
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < len; j++) {
                 System.out.print(wordLog[i][j] + " ");
@@ -300,7 +301,6 @@ public class Main {
         System.out.println(log);
     }
 
-    // menu();
     public static void eliminationNotification(String player, String description) {
         clear();
         int len = description.length();
@@ -329,7 +329,7 @@ public class Main {
             System.out.print(border + " ");
         }
         System.out.println();
-        int start = len / 2 - (player.length() - 21);
+        int start = len  - (player.length() + 21) / 2;
         for (int i = 0; i < start; i++) {
             System.out.print(" ");
         }
@@ -340,5 +340,4 @@ public class Main {
         }
         System.out.println();
     }
-    
 }
