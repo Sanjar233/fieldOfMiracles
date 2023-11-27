@@ -6,13 +6,13 @@ public class Main {
         clear();
         Scanner sc = new Scanner(System.in);
         Random rand = new Random();
-
+        
         ArrayList<String> players = getPlayers();
 
         HashMap<Integer, String> playersQueue = randomizeQueue(players.size(), players);
 
         String word = getRandomWord();
-
+        String [] wordsLetters = word.split("");
 
         String description = getDescription(word);
 
@@ -60,11 +60,16 @@ public class Main {
                     log = "CORRECT";
                     i--;
                     used.add(guess);
+                    if (containsAll(used, wordsLetters) == true)
+                    {
+                        victoryLog(curPlayer, description);
+                        System.exit(0);
+                    }
                     score.replace(curPlayer, score.get(curPlayer) + scorePerLetter);
                     if (score.get(curPlayer) > curMaxScore)
                         curMaxScore = score.get(curPlayer);
                     menu(word, used, description, scorePerLetter, curPlayer, curScore, log);
-                    if (score.get(curPlayer) >= maxScore) {
+                    if ((score.get(curPlayer) >= maxScore || containsAll(used,wordsLetters) == true) && players.size() == 1) {
                         victoryLog(curPlayer, description);
                         System.exit(0);
                     }
@@ -126,7 +131,7 @@ public class Main {
                 String guess = sc.next();
                 guess = guess.toUpperCase();
                 if (guess.equals(word)) {
-                    String [] wordsLetters = word.split("");
+
                     for(String e : wordsLetters)
                     {
                         used.add(e);
@@ -142,7 +147,7 @@ public class Main {
                 continue;
             }
         }
-        victoryLog(curPlayer, description);
+        victoryLog(curWinner, description);
 
     }
 
@@ -236,7 +241,6 @@ public class Main {
     public static void menu(String word, ArrayList<String> usedLetters, String description, int pointsForGuess,
                             String curPlayer, int pScore, String log) {
         clear();
-        System.out.println(word);
         String border = "\u2BC0";
         String hidenLetter = "\u2BCE";
 
@@ -329,7 +333,7 @@ public class Main {
             System.out.print(border + " ");
         }
         System.out.println();
-        int start = len  - (player.length() + 21) / 2;
+        int start = len - (player.length() + 21) / 2;
         for (int i = 0; i < start; i++) {
             System.out.print(" ");
         }
@@ -339,5 +343,13 @@ public class Main {
             System.out.print(border + " ");
         }
         System.out.println();
+    }
+
+    public static boolean containsAll(ArrayList<String>used,String [] wordLetters)
+    {
+        for (int i = 0; i < wordLetters.length;i++){
+            if(!used.contains(wordLetters[i]))return false;
+        }
+        return true;
     }
 }
